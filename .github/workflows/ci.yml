@@ -1,0 +1,54 @@
+name: Continues Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+env:
+  SINGLE_FILE: "true"
+
+jobs:
+  continues_integration:
+    name: Run continues integration for ${{ github.event_name }} event
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./cli
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+        
+    - name: Restore dependencies
+      run: |
+        dotnet restore
+        
+    - name: Build
+      run: |
+        dotnet build --configuration Release --no-restore
+        
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      
+    - name: Publish
+      if: ${{ github.event_name != 'pull_request' }}
+      run: |
+        cd AzWhoAmI.ConsoleApp
+        dotnet publish -p:PublishSingleFile=$SINGLE_FILE --runtime win-x64 --configuration Release --no-self-contained --output ../../publish/
+        
+    - name: Upload a Build Artifact
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: cli
+        path: publish/

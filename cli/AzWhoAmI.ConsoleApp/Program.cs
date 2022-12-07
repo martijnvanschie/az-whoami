@@ -8,8 +8,13 @@ var image = new CanvasImage(AzWhoAmI.ConsoleApp.Properties.Resources.azure_logo)
 image.MaxWidth(26);
 AnsiConsole.Write(image);
 
-AccountCommands accountCommand = new();
-AdCommands sps = new();
+var extentions = await ExtensionCommands.ListServicePrincipalsAsync();
+if (extentions.Any(e => e.Name.Equals("account")) == false)
+{
+    AnsiConsole.MarkupLine("[red]The required extension 'account' was not found.[/]");
+    Environment.Exit(-1);
+}
+
 
 await OutputProvider.PrintCurrentAccountAsync();
 AnsiConsole.MarkupLine("");

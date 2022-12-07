@@ -4,6 +4,17 @@
 
 Azure Who Am I is a small wrapper around various Azure CLI (`az`) command which give information about your current logged in account for Azure CLI.
 
+## Prerequisites
+
+**Azure CLI**  
+Download the CLI from the download page [Azure Command-Line Interface](https://learn.microsoft.com/en-us/cli/azure/)
+
+**.Net 7.0**  
+The code is running on .Net 7.0 which can be downloaded here at [.NET 7.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-7.0.100-windows-x64-installer) download site.
+
+**Azure CLI account extension**  
+`az extension add --name account`
+
 ## Installation
 
 Just download the executable from the [releases](https://github.com/martijnvanschie/az-whoami/releases) page. Put in a (shared) folder and add the folder to your PATH variable. Then just run `azwhoami`.

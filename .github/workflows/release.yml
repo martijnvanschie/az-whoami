@@ -60,7 +60,7 @@ jobs:
 
     env:
       SINGLE_FILE: "true"
-      PROJECT_FILE: "cli/AzWhoAmI.ConsoleApp/AzWhoAmI.ConsoleApp.csproj"
+      PROJECT_FILE: "cli/package.props"
 
     defaults:
       run:

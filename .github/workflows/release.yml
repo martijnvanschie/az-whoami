@@ -1,0 +1,137 @@
+name: Create release based on tag
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  create_release_version:
+    name: Extract tag and create release
+    runs-on: ubuntu-latest
+
+    outputs:
+      version-assembly: ${{ steps.output-params.outputs.version-assembly }}
+      version-file: ${{ steps.output-params.outputs.version-file }}
+      version-informational: ${{ steps.output-params.outputs.version-informational }}
+      version-package: ${{ steps.output-params.outputs.version-package }}
+      buildnumber: ${{ steps.output-params.outputs.buildnumber }}
+
+    env:
+      VERBOSE: 'true'
+
+    steps:
+      - name: Checkout the source code
+        uses: actions/checkout@v2.4.2
+
+      - name: Query for latest tag
+        id: querytag
+        uses: jimschubert/query-tag-action@v2
+        with:
+          include: 'v*'
+          #exclude: '*-rc*'
+          commit-ish: 'HEAD'
+
+      - name: Get version from tag
+        id: dotnet-versions
+        uses: martijnvanschie/github-actions/get-dotnet-versions@v1.0.0-rc.1
+        with: 
+          version: ${{ steps.querytag.outputs.tag }}
+
+      - name: Set output parameters
+        id: output-params
+        shell: bash
+        run: |
+          echo "::set-output name=version-assembly::${{ steps.dotnet-versions.outputs.version-assembly }}"
+          echo "::set-output name=version-file::${{ steps.dotnet-versions.outputs.version-file }}"
+          echo "::set-output name=version-informational::${{ steps.dotnet-versions.outputs.version-informational }}"
+          echo "::set-output name=version-package::${{ steps.dotnet-versions.outputs.version-package }}"
+          echo "::set-output name=buildnumber::${{ steps.dotnet-versions.outputs.buildnumber }}" 
+
+  build_artifacts:
+    name: Build and publish artifacts
+    needs: create_release_version
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - runtime: "win-x64"
+            selfContained: "--no-self-contained"
+            publishFolder: "win-x64"  
+
+    env:
+      SINGLE_FILE: "true"
+      PROJECT_FILE: "cli/AzWhoAmI.ConsoleApp/AzWhoAmI.ConsoleApp.csproj"
+
+    defaults:
+      run:
+        working-directory: ./cli
+
+    steps:
+      - name: Checkout the source code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore
+
+      - name: Get version from tag
+        id: dotnet-versions
+        uses: martijnvanschie/github-actions/apply-dotnet-version@v1.0.0-rc.2
+        with: 
+          version-assembly: '${{ needs.create_release_version.outputs.version-assembly }}'
+          version-file: '${{ needs.create_release_version.outputs.version-file }}'
+          version-informational: '${{ needs.create_release_version.outputs.version-informational }}'
+          version-package: '${{ needs.create_release_version.outputs.version-package }}'
+          projectFile: '${{ env.PROJECT_FILE }}'
+
+      - name: Print project file
+        run: |
+          cd ..
+          cat '${{ env.PROJECT_FILE }}'
+
+      - name: Publish
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          cd Azure.Cli.ContextSwitcher
+          dotnet publish --runtime ${{ matrix.runtime }} --configuration Release ${{ matrix.selfContained }} --output ../../publish/${{ matrix.publishFolder }}
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@0.6.1
+        with:
+          path: publish/${{ matrix.publishFolder }}
+          filename: azctx-${{ matrix.publishFolder }}-${{ needs.create_release_version.outputs.version-package }}.zip 
+
+      - name: Upload a Build Artifact
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: cli
+          path: "*.zip"
+
+  release-cli:
+    name: Release the cli
+    runs-on: ubuntu-latest
+    needs: [create_release_version, build_artifacts]
+
+    steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: cli
+
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "*.zip"
+        name: Release v${{ needs.create_release_version.outputs.version-package }}
+        body: |
+          # Release notes
+          
+          v${{ needs.create_release_version.outputs.version-package }} of Azure CLI Who Am I
+        tag: v${{ needs.create_release_version.outputs.version-package }}
+        allowUpdates: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: true

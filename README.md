@@ -1,5 +1,9 @@
 # Azure Who Am I
 
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/martijnvanschie/az-whoami?label=Latest%20Release&logo=github)
+![GitHub Release Date](https://img.shields.io/github/release-date/martijnvanschie/az-whoami?logo=github)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/martijnvanschie/az-whoami/Continues%20Integration?label=CI%20build&logo=github)
+
 ## What does it do
 
 Azure Who Am I is a small wrapper around various Azure CLI (`az`) command which give information about your current logged in account for Azure CLI.

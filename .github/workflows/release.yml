@@ -100,7 +100,7 @@ jobs:
       - name: Set PublishSingleFile to true
         uses: rvolo/xml-replace-action@v0.3
         with:
-          filepath: '${{ env.PROJECT_FILE }}'
+          filepath: '${{ env.VERSION_FILE }}'
           xpath: '//Project/PropertyGroup/PublishSingleFile/text()'
           replace: '${{ env.SINGLE_FILE }}'           
 

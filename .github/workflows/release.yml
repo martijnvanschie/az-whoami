@@ -96,6 +96,14 @@ jobs:
           cd ..
           cat '${{ env.VERSION_FILE }}'
 
+      # PublishSingleFile
+      - name: Set PublishSingleFile to true
+        uses: rvolo/xml-replace-action@v0.3
+        with:
+          filepath: '${{ env.PROJECT_FILE }}'
+          xpath: '//Project/PropertyGroup/PublishSingleFile/text()'
+          replace: '${{ env.SINGLE_FILE }}'           
+
       - name: Publish
         if: ${{ github.event_name != 'pull_request' }}
         run: |

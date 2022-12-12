@@ -35,7 +35,7 @@ jobs:
         id: dotnet-versions
         uses: martijnvanschie/create-dotnet-versions-action@v1.0.0-rc.1
         with: 
-          version: ${{ steps.querytag.outputs.tag }}
+          baseversion: ${{ steps.querytag.outputs.tag }}
 
       - name: Set output parameters
         id: output-params

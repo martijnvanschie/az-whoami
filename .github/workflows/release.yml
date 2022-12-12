@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@v2.4.2
+        uses: actions/checkout@v3.2.0
 
       - name: Query for latest tag
         id: querytag
@@ -33,7 +33,7 @@ jobs:
 
       - name: Get version from tag
         id: dotnet-versions
-        uses: martijnvanschie/github-actions/get-dotnet-versions@v1.0.0-rc.1
+        uses: martijnvanschie/create-dotnet-versions-action@v1.0.0-rc.1
         with: 
           version: ${{ steps.querytag.outputs.tag }}
 
@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.2.0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1

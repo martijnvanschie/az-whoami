@@ -81,7 +81,7 @@ jobs:
         run: |
           dotnet restore
 
-      - name: Get version from tag
+      - name: Apply dotnet versions to project file
         id: dotnet-versions
         uses: martijnvanschie/github-actions/apply-dotnet-version@v1.0.0-rc.2
         with: 

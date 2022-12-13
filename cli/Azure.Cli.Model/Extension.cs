@@ -27,4 +27,52 @@ namespace Azure.Cli.Model
         [JsonPropertyName("version")]
         public string Version { get; set; }
     }
+
+    public class CloudConfig
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("source")]
+        public string Source { get; set; }
+
+        [JsonPropertyName("value")]
+        public string Value { get; set; }
+    }
+
+    public class CoreConfig
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("source")]
+        public string Source { get; set; }
+
+        [JsonPropertyName("value")]
+        public string Value { get; set; }
+    }
+
+    public class ExtensionConfig
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("source")]
+        public string Source { get; set; }
+
+        [JsonPropertyName("value")]
+        public string Value { get; set; }
+    }
+
+    public class Config
+    {
+        [JsonPropertyName("cloud")]
+        public List<CloudConfig> Cloud { get; set; }
+
+        [JsonPropertyName("core")]
+        public List<CoreConfig> Core { get; set; }
+
+        [JsonPropertyName("extension")]
+        public List<ExtensionConfig> Extension { get; set; }
+    }
 }

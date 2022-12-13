@@ -45,4 +45,39 @@ namespace Azure.Cli.Commands
             return myDeserializedClass;
         }
     }
+
+    public class ConfigCommands
+    {
+        /// <summary>
+        /// List service principals.
+        /// https://learn.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-list
+        /// </summary>
+        /// <returns>
+        /// For low latency, by default, only the first 100 will be returned unless you provide filter arguments or use "--all".
+        /// </returns>
+        public static async Task<Config> GetConfigAsync()
+        {
+            var stdOutBuffer = new StringBuilder();
+            var stdErrBuffer = new StringBuilder();
+
+            try
+            {
+                var result = await Wrap.Cli.Wrap("az")
+                .WithArguments("config get")
+                .WithStandardOutputPipe(Wrap.PipeTarget.ToStringBuilder(stdOutBuffer))
+                .WithStandardErrorPipe(Wrap.PipeTarget.ToStringBuilder(stdErrBuffer))
+                .ExecuteAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            var stdOut = stdOutBuffer.ToString();
+            var stdErr = stdErrBuffer.ToString();
+
+            var myDeserializedClass = JsonSerializer.Deserialize<Config>(stdOut);
+            return myDeserializedClass;
+        }
+    }
 }

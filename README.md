@@ -31,6 +31,6 @@ Currently only a preview version is available which is a win-64 release build.
 
 The command line will print various kinds of information related to your account. Depending on your account type (user|service principal) you will get other information.
 
-Below is an example of my user account which i used for work :)
+Below is an example of my personal Azure user account :)
 
 ![Drag Racing](./img/example.png)

@@ -27,7 +27,7 @@ Currently only a preview version is available which is a win-64 release build.
 
 **Note:** `azwhoami` required .Net 7 to be installed on your machine. It also works with Azure CLI which ofcourse is also required.
 
-## So waht do i get
+## So what do i get
 
 The command line will print various kinds of information related to your account. Depending on your account type (user|service principal) you will get other information.
 

@@ -52,6 +52,31 @@ namespace AzWhoAmI.ConsoleApp
                 });
         }
 
+        public static async Task PrintTenantsAsync()
+        {
+            await AnsiConsole.Status()
+                .StartAsync("Getting tenants for current account...", async ctx =>
+                {
+                    AnsiConsole.MarkupLine($"[gold1]You have access to the following tenants[/]");
+
+                    try
+                    {
+                        var list = await accountCommand.ListTenantsAsync();
+                        if (list != null && list.Any())
+                        {
+                            foreach (var item in list)
+                            {
+                                AnsiConsole.MarkupLineInterpolated($"\t[bold yellow]{item.Name} - {item.Id}[/]");
+                            }
+                        }
+                    }
+                    catch (CommandExecutionException ex)
+                    {
+                        AnsiConsole.MarkupLineInterpolated($"\t[bold red]Unable to get domains for this account[/]");
+                    }
+                });
+        }
+
         public static async Task PrintDomainsAsync()
         {
             await AnsiConsole.Status()
@@ -70,7 +95,7 @@ namespace AzWhoAmI.ConsoleApp
                             }
                         }
                     }
-                    catch(CommandExecutionException ex)
+                    catch (CommandExecutionException ex)
                     {
                         AnsiConsole.MarkupLineInterpolated($"\t[bold red]Unable to get domains for this account[/]");
                     }

@@ -47,6 +47,9 @@ if (extentions.Any(e => e.Name.Equals("account")) == false)
 await OutputProvider.PrintCurrentAccountAsync();
 AnsiConsole.MarkupLine("");
 
+await OutputProvider.PrintTenantsAsync();
+AnsiConsole.MarkupLine("");
+
 await OutputProvider.PrintDomainsAsync();
 AnsiConsole.MarkupLine("");
 

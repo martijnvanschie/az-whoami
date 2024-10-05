@@ -64,6 +64,22 @@ namespace Azure.Cli.Commands
             return myDeserializedClass;
         }
 
+        public async Task<string> GetActiveTenantIdAsync()
+        {
+            var stdOutBuffer = new StringBuilder();
+            var stdErrBuffer = new StringBuilder();
+
+            var result = await Wrap.Cli.Wrap("az")
+                .WithArguments("account show --query tenantId")
+                .WithStandardOutputPipe(Wrap.PipeTarget.ToStringBuilder(stdOutBuffer))
+                .WithStandardErrorPipe(Wrap.PipeTarget.ToStringBuilder(stdErrBuffer))
+                .ExecuteAsync();
+
+            var stdOut = stdOutBuffer.ToString();
+            var stdErr = stdErrBuffer.ToString();
+            return stdOut.Replace("\"", string.Empty).Trim();
+        }
+
         public async Task<Subscription> ShowSubscriptionAsync(string id)
         {
             var stdOutBuffer = new StringBuilder();

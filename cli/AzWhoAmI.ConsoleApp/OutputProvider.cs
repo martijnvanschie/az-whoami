@@ -18,12 +18,13 @@ namespace AzWhoAmI.ConsoleApp
                 .StartAsync("Getting current account...", async ctx =>
                 {
                     var account = await accountCommand.ShowAccountAsync();
-                    AnsiConsole.MarkupLineInterpolated($"[gold1]You are current logged in with a {account.User.Type} account[/]");
 
                     switch (account.User.Type.ToLower())
                     {
                         case "user":
                             var user = await sps.GetSignedInUserAsync();
+                            AnsiConsole.MarkupLineInterpolated($"[gold1]You are current logged in with a {account.User.Type} account[/]");
+                            AnsiConsole.WriteLine();
                             var table = new Table();
                             table.Border(TableBorder.None);
                             table.AddColumns("Id", "Property", "Value");
@@ -36,6 +37,8 @@ namespace AzWhoAmI.ConsoleApp
                             break;
                         case "serviceprincipal":
                             var sp = await sps.GetServicePrincipalAsync(account.User.Name);
+                            AnsiConsole.MarkupLineInterpolated($"[gold1]You are current logged in with a {account.User.Type} account[/]");
+                            AnsiConsole.WriteLine();
                             var table1 = new Table();
                             table1.Border(TableBorder.None);
                             table1.AddColumns("Id", "Property", "Value");
@@ -57,17 +60,34 @@ namespace AzWhoAmI.ConsoleApp
             await AnsiConsole.Status()
                 .StartAsync("Getting tenants for current account...", async ctx =>
                 {
-                    AnsiConsole.MarkupLine($"[gold1]You have access to the following tenants[/]");
 
                     try
                     {
+                        var currentId = await accountCommand.GetActiveTenantIdAsync();
                         var list = await accountCommand.ListTenantsAsync();
                         if (list != null && list.Any())
                         {
+                            AnsiConsole.MarkupLine($"[gold1]You have access to the following tenants[/]");
+                            AnsiConsole.WriteLine();
+
+                            var table = new Table();
+                            table.Border(TableBorder.None);
+                            table.AddColumns("", "Name", "State", "Id");
+
                             foreach (var item in list)
                             {
-                                AnsiConsole.MarkupLineInterpolated($"\t[bold yellow]{item.Name} - {item.Id}[/]");
+                                var active = item.Id.Equals(currentId) ? "[bold blue]Active[/]" : "Inactive";
+                                table.AddRow(string.Empty, $"[bold yellow]{item.Name}[/]", active, $"[{item.Id}]".EscapeMarkup());
                             }
+
+                            table.Columns[0].Width(7);
+                            //table.HideHeaders();
+
+                            AnsiConsole.Write(table);
+                        }
+                        else
+                        {
+                            AnsiConsole.MarkupLine($"[gold1]You don't have access to anytenants[/]");
                         }
                     }
                     catch (CommandExecutionException ex)
@@ -80,9 +100,9 @@ namespace AzWhoAmI.ConsoleApp
         public static async Task PrintDomainsAsync()
         {
             await AnsiConsole.Status()
-                .StartAsync("Getting domain for current account...", async ctx =>
+                .StartAsync("Getting custom domain for current active tenant...", async ctx =>
                 {
-                    AnsiConsole.MarkupLine($"[gold1]You have access to the following domains[/]");
+                    AnsiConsole.MarkupLine($"[gold1]The active tenant has the following custom domains[/]");
 
                     try
                     {

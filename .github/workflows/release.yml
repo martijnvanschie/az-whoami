@@ -21,11 +21,11 @@ jobs:
 
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@v3.2.0
+        uses: actions/checkout@v4
 
       - name: Query for latest tag
         id: querytag
-        uses: jimschubert/query-tag-action@v2
+        uses: jimschubert/query-tag-action@v2.2
         with:
           include: 'v*'
           #exclude: '*-rc*'
@@ -70,12 +70,12 @@ jobs:
 
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@v3.2.0
+        uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 8.0.x
 
       - name: Restore dependencies
         run: |
@@ -110,14 +110,14 @@ jobs:
           cd '${{ env.PROJECT_FOLDER }}'
           dotnet publish --runtime ${{ matrix.runtime }} --configuration Release ${{ matrix.selfContained }} --output ../../publish/${{ matrix.publishFolder }}
       - name: Zip Release
-        uses: TheDoctor0/zip-release@0.6.1
+        uses: TheDoctor0/zip-release@0.7.6
         with:
           path: publish/${{ matrix.publishFolder }}
           filename: ${{ env.RELEASE_FILENAME }}-${{ matrix.publishFolder }}-${{ needs.create_release_version.outputs.version-package }}.zip 
 
       - name: Upload a Build Artifact
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v4
         with:
           name: cli
           path: "*.zip"
@@ -129,7 +129,7 @@ jobs:
 
     steps:
     - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+      uses: actions/download-artifact@v4
       with:
         name: cli
 

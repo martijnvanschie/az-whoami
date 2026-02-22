@@ -1,7 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using AzWhoAmI.ConsoleApp;
 using Azure.Cli.Commands;
-using Azure.Cli.Commands.Ad;
 using Spectre.Console;
 
 const string URL_EXTENSIONS = "https://learn.microsoft.com/en-us/cli/azure/azure-cli-extensions-overview";

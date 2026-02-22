@@ -22,10 +22,10 @@ namespace Azure.Cli.Model
         public string Path { get; set; }
 
         [JsonPropertyName("preview")]
-        public bool Preview { get; set; }
+        public bool? Preview { get; set; }
 
         [JsonPropertyName("version")]
-        public string Version { get; set; }
+        public string? Version { get; set; }
     }
 
     public class CloudConfig

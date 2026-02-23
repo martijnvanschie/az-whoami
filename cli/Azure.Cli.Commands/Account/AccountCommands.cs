@@ -49,8 +49,8 @@ namespace Azure.Cli.Commands
             var stdOutBuffer = new StringBuilder();
             var stdErrBuffer = new StringBuilder();
 
-            var result = await Wrap.Cli.Wrap("pwsh")
-                .WithArguments("-Command Get-AzTenant | Select-Object Id, Name | ConvertTo-Json")
+            var result = await Wrap.Cli.Wrap("az")
+                .WithArguments("rest --method GET --uri https://management.azure.com/tenants?api-version=2020-01-01")
                 .WithStandardOutputPipe(Wrap.PipeTarget.ToStringBuilder(stdOutBuffer))
                 .WithStandardErrorPipe(Wrap.PipeTarget.ToStringBuilder(stdErrBuffer))
                 .WithValidation(Wrap.CommandResultValidation.None)
@@ -60,8 +60,8 @@ namespace Azure.Cli.Commands
             var stdOut = stdOutBuffer.ToString();
             var stdErr = stdErrBuffer.ToString();
 
-            var myDeserializedClass = JsonSerializer.Deserialize<List<Tenant>>(stdOut);
-            return myDeserializedClass;
+            var myDeserializedClass = JsonSerializer.Deserialize<TenantList>(stdOut);
+            return myDeserializedClass.Tenants;
         }
 
         public async Task<string> GetActiveTenantIdAsync()

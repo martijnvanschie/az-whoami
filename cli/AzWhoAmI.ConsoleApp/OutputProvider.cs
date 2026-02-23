@@ -76,8 +76,8 @@ namespace AzWhoAmI.ConsoleApp
 
                             foreach (var item in list)
                             {
-                                var active = item.Id.Equals(currentId) ? "[bold blue]Active[/]" : "Inactive";
-                                table.AddRow(string.Empty, $"[bold yellow]{item.Name}[/]", active, $"[{item.Id}]".EscapeMarkup());
+                                var active = item.TenantId.Equals(currentId) ? "[bold blue]Active[/]" : "Inactive";
+                                table.AddRow(string.Empty, $"[bold yellow]{item.Name}[/]", active, $"[{item.TenantId}]".EscapeMarkup());
                             }
 
                             table.Columns[0].Width(7);

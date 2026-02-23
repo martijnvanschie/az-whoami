@@ -1,0 +1,3 @@
+{
+    "dotnet.defaultSolution": "cli\\Az WhoAmI.sln"
+}

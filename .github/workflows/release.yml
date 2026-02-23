@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Query for latest tag
         id: querytag
@@ -70,12 +70,12 @@ jobs:
 
     steps:
       - name: Checkout the source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
       - name: Restore dependencies
         run: |
@@ -129,7 +129,7 @@ jobs:
 
     steps:
     - name: Download a Build Artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: cli
 
